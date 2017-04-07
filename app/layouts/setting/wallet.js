@@ -39,7 +39,7 @@ class Wallet extends Component {
 
     logOut = () => {
         GoogleSignin.revokeAccess().then(() => GoogleSignin.signOut()).then(() => {
-            this.setState({ user: null });
+            // this.setState({ user: null });
             console.log('signOutGG')
         }).done();
         const { dispatch } = this.props;
