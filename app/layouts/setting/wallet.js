@@ -27,21 +27,22 @@ class Wallet extends Component {
         this.state = {
             updateVisible: false
         }
+        this.onLogout = this.props.onLogout.bin(this);
     }
     saveChange = () => {
 
     }
     onPressUpdate = () => {
-        console.log('update_profile')
-        Actions.update_profile()
+        console.log('update_profile');
+        Actions.update_profile();
 
     }
 
     logOut = () => {
-        GoogleSignin.revokeAccess().then(() => GoogleSignin.signOut()).then(() => {
-            // this.setState({ user: null });
-            console.log('signOutGG')
-        }).done();
+        // GoogleSignin.revokeAccess().then(() => GoogleSignin.signOut()).then(() => {
+        //     // this.setState({ user: null });
+        //     console.log('signOutGG')
+        // }).done();
         const { dispatch } = this.props;
         dispatch(actionCreators.logout());
         Actions.login({ type: ActionConst.RESET });

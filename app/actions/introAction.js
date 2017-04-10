@@ -43,7 +43,8 @@ const initialState = {
     timeMilestone: new Date(),
     isLogin: false,
     isAnswering: false,
-    user: null
+    user: {},
+    user_profile: {}
 }
 
 export const reducer = (state = initialState, action) => {
@@ -85,7 +86,7 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLogin: false,
-                user: null
+                user: {},
             }
         }
         case types.ANSWERING: {

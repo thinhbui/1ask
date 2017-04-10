@@ -12,7 +12,6 @@ const mapStateToProps = (state) => ({
     timeMilestone: state.timeMilestone,
     isAnswering: state.isAnswering,
     user: state.user
-
 })
 
 // Row comparison function
@@ -23,8 +22,6 @@ const mapStateToProps = (state) => ({
 class WaitQuestion extends Component {
     constructor(props) {
         super(props);
-
-        this.onSend = this.onSend.bind(this);
         this.runInterval;
         this.isRunning = false;
         this.state = {
@@ -37,8 +34,44 @@ class WaitQuestion extends Component {
             modalFinishQuestion: false
         };
     }
+    componentDidMount() {
+        console.log(this.props.user);
+    }
     componentWillMount() {
-        console.log(this.props.user)
+
+    }
+    fetchData() {
+        fetch('https://service.1ask.vn:8443/expert/jobs', {
+            method: 'GET', headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'au-token': 'this.props.user_login.token'
+            }
+        }).then((response) => {
+            console.log(response);
+            if (response.status == 200) {
+                return response.json();
+            } else {
+                let error = new Error(response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }).then((responseJson) => {
+            console.log(responseJson);
+            if (responseJson && responseJson.results[0]) {
+                let a = this.state.list_history.concat(responseJson.results);
+                this.setState({
+                    list_history: a,
+                    dataSource: ds.cloneWithRows(a),
+                    offset: a.length
+                });
+            }
+
+            this.setState({ refreshing: false })
+        }).catch((error) => {
+            console.log(error);
+            this.setState({ refreshing: false })
+        });
     }
     run() {
         this.runInterval = setInterval(() => {
@@ -99,14 +132,7 @@ class WaitQuestion extends Component {
             ],
         });
     }
-    onSend(messages = []) {
-        this.setState((previousState) => {
-            return {
-                messages: GiftedChat.append(previousState.messages, messages),
-            };
-        });
 
-    }
     onRequestClose = () => {
         const { dispatch } = this.props
         console.log('onRequestClose')

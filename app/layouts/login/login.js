@@ -24,11 +24,11 @@ import init from 'react_native_mqtt';
 const mapStateToProps = (state) => ({
     isPass: state.isPass,
     user: state.user,
+    isLogin: state.isLogin
 })
 
 
 class Login extends Component {
-
     constructor(props) {
         super(props)
         this.state = {
@@ -38,7 +38,7 @@ class Login extends Component {
             isConnected: null,
             isMqttDisconnect: false
         }
-
+        //        this.onLogin = this.props.onLogin.bind(this)
 
         init({
             size: 10000,
@@ -104,18 +104,28 @@ class Login extends Component {
             alert('Có lỗi trong quá trình đăng nhập');
         });
     }
+    onLogin() {
+        console.log('onlogin')
+    }
     componentWillMount() {
-        this.setupGoogleSignin()
-//        console.log(this.props.user)
+        this.setupGoogleSignin();
 
+        //        console.log(this.props.user)
+
+    }
+    componentDidMount() {
+        console.log(this.props.isPass, this.props.user)
+        if (this.props.user !== {} && this.props.isPass) {
+            console.log('user null')
+            Actions.main({ type: ActionConst.REFRESH });
+        }
     }
     signOutGG = () => {
         GoogleSignin.revokeAccess().then(() => GoogleSignin.signOut()).then(() => {
-            this.setState({ user: null });
+            this.props.user = null;
             console.log('signOutGG')
         }).done();
     }
-
     init() {
         this.getFcmId();
     }
@@ -263,7 +273,7 @@ class Login extends Component {
             useSSL: true,
             onSuccess: () => onConnect(client),
             onFailure: onFail,
-        } 
+        }
         // var uriParts = wsurl.split(":");
         // uriParts[0] = "wss";
         // wsurl = uriParts.join(":");
@@ -286,7 +296,7 @@ class Login extends Component {
             });
 
             const user = await GoogleSignin.currentUserAsync();
-            this.setState({ user });
+            this.login()
         }
         catch (err) {
             console.log("Play services error", err.code, err.message);
@@ -305,8 +315,6 @@ class Login extends Component {
                 console.log('WRONG SIGNIN', err);
             })
             .done();
-
-
     }
     // onLogin() {
     //     //this.login();
@@ -315,37 +323,28 @@ class Login extends Component {
         const { dispatch } = this.props;
         dispatch(actionCreators.loginActions(this.state.data.credentials));
         console.log(this.state.data);
-        if (this.props.isPass) {
-            Actions.main();
-            console.log('Pass')
+        if (this.props.isLogin) {
+            if (this.props.isPass) {
+                Actions.main();
+                console.log('Pass')
+            }
+            else {
+                Actions.testSkill()
+                console.log('chua Pass')
+            }
         }
-        else {
-            Actions.testSkill()
-            console.log('chua Pass')
-        }
-
-        dispatch(actionCreators.setFirst())
+        // dispatch(actionCreators.setFirst())
 
     }
-    // componentDidMount() {
-    //     FCM.getFCMToken()
-    //         .then(token => {
-    //             console.log(token)
-    //             AsyncStorage
-    //                 .setItem('fcm_id', token)
-    //                 .then(() => this.init())
-    //                 .done();
-    //         });
-    // }
     componentDidUpdate() {
-
-        // console.log('componentDidUpdate', this.props.user)
-        // if (this.props.user)
-        //     Actions.main(ActionConst.RESET);
+        //  console.log('componentDidUpdate', this.props.user)
+        // if (this.props.user !== null && this.props.isPass)
+        //     Actions.main(ActionConst.REFRESH);
+        console.log(this.props.user)
     }
 
     render() {
-
+        let { user } = this.props
         return (
             <View style={{ flex: 1, backgroundColor: '#1f6040' }}>
                 <View style={{ flex: 2, }}>
@@ -375,26 +374,27 @@ class Login extends Component {
                             onLogin={(data) => {
                                 console.log("Logged in!");
                                 console.log(data);
-                                this.setState({
-                                    user: data.credentials,
-                                    data: data
-                                });
+                                this.props.user = data.credentials;
+                                this.login();
                                 //   this.loginThird('facebook', data.credentials.token)
                             }}
+
                             onLogout={() => {
                                 console.log("Logged out.");
-                                this.setState({ user: null });
+                                // this.setState({ user: null });
                             }}
                             onLoginFound={(data) => {
                                 console.log("Existing login found.");
-                                this.setState({ user: data.credentials });
-                                console.log(data);
+                                this.login();
+                                this.props.user = data.credentials;
+                                console.log('login found', data);
+                                console.log('data credentials', data.credentials);
                                 // this.loginThird('facebook', data.credentials.token)
 
                             }}
                             onLoginNotFound={() => {
                                 console.log("No user logged in.");
-                                this.setState({ user: null });
+                                this.props.user = null;
                             }}
                             onError={(data) => {
                                 console.log("ERROR");

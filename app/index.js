@@ -1,4 +1,4 @@
- import {
+import {
     Scene,
     Reducer,
     Router,
@@ -80,6 +80,12 @@ class App extends Component {
         // if (isFirst) {
         //     Actions.intro()
         // }
+        // const { isFirst, user } = this.props;
+        // console.log('componentDidUpdate', `is first:${isFirst}`)
+        // if (isFirst)
+        //     Actions.intro()
+        // if (user !== null)
+        //     Actions.main()
     }
     checkNetWork = () => {
         console.log('checkNetWork')
@@ -91,36 +97,54 @@ class App extends Component {
 
     componentWillMount() {
         this.checkNetWork();
-        console.log('componentWillMount', `${this.props.isFirst}`)
+        console.log('componentWillMount', `is first: ${this.props.isFirst}`)
     }
 
     componentDidUpdate(props, state) {
-        const { isFirst, user } = this.props;
-        console.log('componentDidUpdate', `${isFirst}`)
-        if (isFirst)
-            Actions.intro()
-        if (user)
-            Actions.main()
+        // const { isFirst, user } = this.props;
+        // console.log('componentDidUpdate', `is first:${isFirst}`)
+        // if (isFirst)
+        //     Actions.intro()
+        // if (user !== null)
+        //     Actions.main()
     }
     render() {
         const { isFirst, isLogin } = this.props
-        console.log(isLogin)
-        return (
-            <Router>
-                <Scene key="modal" component={Modal} >
-                    <Scene key="root" hideNavBar >
-                        <Scene key="intro" component={Intro} />
-                        <Scene key="login" component={Login} initial={true} />
-                        <Scene key="testSkill" hideNavBar component={TestSkill} />
-                        <Scene key="modal_test_lever" hideNavBar component={TestLever} />
-                        <Scene key="main" component={Main} ></Scene>
-                        <Scene key="update_profile" hideNavBar component={UpdateProfile}></Scene>
-                        <Scene key="payment" hideNavBar component={Payment}></Scene>
-                        <Scene key="notification" hideNavBar component={UpdateProfile}></Scene>
+        console.log('isLogin', isLogin)
+        if (isLogin)
+            return (
+                <Router>
+                    <Scene key="modal" component={Modal} >
+                        <Scene key="root" hideNavBar >
+                            <Scene key="intro" component={Intro} />
+                            <Scene key="login" component={Login} />
+                            <Scene key="testSkill" hideNavBar component={TestSkill} />
+                            <Scene key="modal_test_lever" hideNavBar component={TestLever} />
+                            <Scene key="main" component={Main} initial/>
+                            <Scene key="update_profile" hideNavBar component={UpdateProfile}></Scene>
+                            <Scene key="payment" hideNavBar component={Payment}></Scene>
+                            <Scene key="notification" hideNavBar component={UpdateProfile}></Scene>
+                        </Scene>
                     </Scene>
-                </Scene>
-            </Router>
-        )
+                </Router>
+            )
+        else
+            return (
+                <Router>
+                    <Scene key="modal" component={Modal} >
+                        <Scene key="root" hideNavBar >
+                            <Scene key="intro" component={Intro} />
+                            <Scene key="login" component={Login} initial />
+                            <Scene key="testSkill" hideNavBar component={TestSkill} />
+                            <Scene key="modal_test_lever" hideNavBar component={TestLever} />
+                            <Scene key="main" component={Main} ></Scene>
+                            <Scene key="update_profile" hideNavBar component={UpdateProfile}></Scene>
+                            <Scene key="payment" hideNavBar component={Payment}></Scene>
+                            <Scene key="notification" hideNavBar component={UpdateProfile}></Scene>
+                        </Scene>
+                    </Scene>
+                </Router>
+            )
 
     }
 }

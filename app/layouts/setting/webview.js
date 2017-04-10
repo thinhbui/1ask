@@ -7,7 +7,7 @@ import {
     Image,
     TouchableOpacity,
     TextInput,
-    Modal
+    Modal, WebView
 } from 'react-native';
 import {
     Actions,
@@ -16,9 +16,25 @@ import Title from '../../components/main_title';
 import Profile from './profile';
 import SettingItem from './setting_item';
 import TextField from 'react-native-md-textinput';
-export default class UpdateProfile extends Component {
-    renderPage() {
-        
+export default class WebView extends Component {
+    constructor(props) {
+        super(props)
+        if (this.props.value === '0') {
+            this.state = {
+                title: 'About 1ASK',
+                url: 'http://1ask.vn/'
+            };
+        } else if (this.props.value === '1') {
+            this.state = {
+                title: 'privacy and term',
+                url: 'http://expert.1ask.vn/dieu-khoan'
+            };
+        } else {
+            this.state = {
+                title: 'Notification',
+                url: this.props.value
+            };
+        }
     }
     render() {
         const { username, icon, placeholder } = this.props
@@ -36,17 +52,7 @@ export default class UpdateProfile extends Component {
                             selectionColor='black'
                         />
                     </View>
-                    <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ flex: 1 }}>
-                            <Text numberOfLines={2} style={{ textAlign: 'center' }}> ljdshfha adjfha dfkj kasd fk dfkajhskjh asdkhaskfhasf as faks ka sfks ka sf asf asf as f</Text>
-                        </View>
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <TouchableOpacity onPress={Actions.pop} style={{ height: '80%', width: '60%', backgroundColor: 'rgb(23,93,81)', justifyContent: 'center', alignItems: 'center', borderRadius: 5 }}>
-                                <Text style={{ color: 'white' }}> Save change</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={{ flex: 7, }}></View>
+                    <WebView />
                 </View>
 
             </View>
@@ -54,4 +60,4 @@ export default class UpdateProfile extends Component {
     }
 }
 
-AppRegistry.registerComponent('OneAskIU', () => UpdateProfile);
+AppRegistry.registerComponent('OneAskIU', () => WebView);
