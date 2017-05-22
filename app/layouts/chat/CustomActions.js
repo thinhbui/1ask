@@ -95,7 +95,7 @@ export default class CustomActions extends React.Component {
 
     setImages(images) {
         this._images = images;
-        console.log('setImages', images)
+        // console.log('setImages', images)
     }
 
     getImages() {

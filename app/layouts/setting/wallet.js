@@ -27,7 +27,7 @@ class Wallet extends Component {
         this.state = {
             updateVisible: false
         }
-        this.onLogout = this.props.onLogout.bin(this);
+        // this.onLogout = this.props.onLogout.bin(this);
     }
     saveChange = () => {
 

@@ -32,7 +32,7 @@ export default class Chat extends React.Component {
             sync: {
             }
         });
-        this.client = new Paho.MQTT.Client('mqtt.1ask.vn', 9883, 'clientId-ES3X3RX87n');
+        this.client = new Paho.MQTT.Client('broker.mqttdashboard.com', 8000, 'clientId-ES3X3RX87n');
 
         this._isMounted = false;
 
@@ -77,24 +77,9 @@ export default class Chat extends React.Component {
         }
 
         onMessageArrived = (message) => {
-            // FCM.presentLocalNotification({
-            //   id: "UNIQ_ID_STRING",                               // (optional for instant notification)
-            //   title: "My Notification Title",                     // as FCM payload
-            //   body: "My Notification Message",                    // as FCM payload (required)
-            //   sound: "default",                                   // as FCM payload
-            //   priority: "high",                                   // as FCM payload
-            //   click_action: "ACTION",                             // as FCM payload
-            //   badge: 10,                                          // as FCM payload IOS only, set 0 to clear badges
-            //   icon: "ic_launcher",                                // as FCM payload, you can relace this with custom icon you put in mipmap
-            //   my_custom_data: 'my_custom_field_value',             // extra data you want to throw
-            //   show_in_foreground: true                                  // notification when app is in foreground (local & remote)
-            // });
             console.log(message.payloadString);
             try {
                 var messi = JSON.parse(message.payloadString);
-                console.log(messi);
-                console.log(messi.id);
-                console.log(messi.text);
                 if (messi.id !== 1) {
                     // this.onReceive(messi.text);
                 }
@@ -103,27 +88,10 @@ export default class Chat extends React.Component {
                 this.onReceive(message.payloadString);
                 console.log(error);
             }
-            // console.log(message.payloadString);
-            // try {
-            //     var tmp = JSON.parse(message.payloadString);
-            //     if (typeof (tmp) !== 'object') {
-            //         tmp = JSON.parse(tmp);
-            //     }
-            //     if (!tmp.data || !tmp.data.type) {
-            //         // console.log('refresh');
-            //         // Actions.answer({ mesage: tmp.content });
-            //         // Actions.refresh({ message: tmp });
-            //       //  this.addMsg(tmp);
-            //     } else if (tmp.data.type === 14) {
-            //         console.log(tmp);
-            //       //  Actions.acceptQuestion({ qs: tmp.data });
-            //     }
-            // } catch (error) {
-            //     console.log(error);
-            // }
         }
 
         onMessageDelivered = (message) => {
+            // this.onReceive(message.payloadString);
             console.log('onMessageDelivered');
 
         }
@@ -145,7 +113,7 @@ export default class Chat extends React.Component {
         this.client.connect(option);
     }
     componentDidMount() {
-        this.mqttSetup('testtopic/2', 'clientId-ES3X3RX87n', 'username', '1ask123456');
+        this.mqttSetup('testtopic/10', 'clientId-ES3X3RX87n', '', '');
     }
     componentWillMount() {
         this._isMounted = true;
@@ -154,12 +122,12 @@ export default class Chat extends React.Component {
                 messages: [
                     {
                         _id: 1,
-                        text: 'Hello developer',
+                        text: 'Chào bạn',
                         createdAt: new Date(),
                         user: {
                             _id: 2,
                             name: 'React Native',
-                            avatar: 'https://facebook.github.io/react/img/logo_og.png',
+                            avatar: 'http://i3.kym-cdn.com/photos/images/facebook/000/101/771/1879f18e_e542_e1c6.jpg',
                         },
                     },
                 ],
@@ -173,7 +141,7 @@ export default class Chat extends React.Component {
 
 
     sendImage(path) {
-        console.log('sendImage')
+        console.log('sendImage');
         this.setState({
             messages: [
                 {
@@ -183,7 +151,7 @@ export default class Chat extends React.Component {
                     user: {
                         _id: 2,
                         name: 'React Native',
-                        avatar: 'https://facebook.github.io/react/img/logo_og.png',
+                        avatar: 'http://i3.kym-cdn.com/photos/images/facebook/000/101/771/1879f18e_e542_e1c6.jpg',
                     },
                 },
             ]
@@ -191,18 +159,22 @@ export default class Chat extends React.Component {
         this.onSend(messages)
     }
     onSend(messages = []) {
-        let messi = {
-            id: 1,
-            text: messages[0].text
+        for (var i = 0; i < messages.length; i++) {
+            let messi = {
+                id: 1,
+                text: messages[i].text ? messages[i].text : messages[i].image
+            }
+            // console.log(messages[0]);
+            var message = new Paho.MQTT.Message(JSON.stringify(messi));
+            message.destinationName = 'testtopic/10';
+            this.client.send(message);
+            this.setState((previousState) => {
+                return {
+                    messages: GiftedChat.append(previousState.messages, messages),
+                };
+            });
         }
-        var message = new Paho.MQTT.Message(JSON.stringify(messi));
-        message.destinationName = 'testtopic/2';
-        this.client.send(message);
-        this.setState((previousState) => {
-            return {
-                messages: GiftedChat.append(previousState.messages, messages),
-            };
-        });
+
         // let output = {
         //     content: this.state.text_input,
         //     owner: { id: this.state.question.expert.id },
@@ -235,7 +207,7 @@ export default class Chat extends React.Component {
                     user: {
                         _id: 2,
                         name: 'React Native',
-                        avatar: 'https://facebook.github.io/react/img/logo_og.png',
+                        avatar: 'http://i3.kym-cdn.com/photos/images/facebook/000/101/771/1879f18e_e542_e1c6.jpg',
                     },
                 }),
             };

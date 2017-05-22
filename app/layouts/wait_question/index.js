@@ -35,44 +35,52 @@ class WaitQuestion extends Component {
         };
     }
     componentDidMount() {
+        const { timeMilestone, isAnswering } = this.props;
+        let today = new Date();
+        let milestone = new Date(timeMilestone.toString());
+        if (isAnswering && !this.state.modalAcceptVisible) {
+            this.setState({
+                modalAcceptVisible: true
+            })
+        }
         console.log(this.props.user);
     }
     componentWillMount() {
 
     }
-    fetchData() {
-        fetch('https://service.1ask.vn:8443/expert/jobs', {
-            method: 'GET', headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'au-token': 'this.props.user_login.token'
-            }
-        }).then((response) => {
-            console.log(response);
-            if (response.status == 200) {
-                return response.json();
-            } else {
-                let error = new Error(response.statusText);
-                error.response = response;
-                throw error;
-            }
-        }).then((responseJson) => {
-            console.log(responseJson);
-            if (responseJson && responseJson.results[0]) {
-                let a = this.state.list_history.concat(responseJson.results);
-                this.setState({
-                    list_history: a,
-                    dataSource: ds.cloneWithRows(a),
-                    offset: a.length
-                });
-            }
+    // fetchData() {
+    //     fetch('https://service.1ask.vn:8443/expert/jobs', {
+    //         method: 'GET', headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //             'au-token': 'this.props.user_login.token'
+    //         }
+    //     }).then((response) => {
+    //         console.log(response);
+    //         if (response.status == 200) {
+    //             return response.json();
+    //         } else {
+    //             let error = new Error(response.statusText);
+    //             error.response = response;
+    //             throw error;
+    //         }
+    //     }).then((responseJson) => {
+    //         console.log(responseJson);
+    //         if (responseJson && responseJson.results[0]) {
+    //             let a = this.state.list_history.concat(responseJson.results);
+    //             this.setState({
+    //                 list_history: a,
+    //                 dataSource: ds.cloneWithRows(a),
+    //                 offset: a.length
+    //             });
+    //         }
 
-            this.setState({ refreshing: false })
-        }).catch((error) => {
-            console.log(error);
-            this.setState({ refreshing: false })
-        });
-    }
+    //         this.setState({ refreshing: false })
+    //     }).catch((error) => {
+    //         console.log(error);
+    //         this.setState({ refreshing: false })
+    //     });
+    // }
     run() {
         this.runInterval = setInterval(() => {
             const { timeMilestone } = this.props;
@@ -121,7 +129,7 @@ class WaitQuestion extends Component {
             messages: [
                 {
                     _id: 1,
-                    text: 'Hello developer',
+                    text: 'Chào Thịnh',
                     createdAt: new Date(),
                     user: {
                         _id: 2,

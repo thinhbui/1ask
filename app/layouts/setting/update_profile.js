@@ -15,7 +15,7 @@ import {
 import Title from '../../components/main_title';
 import Profile from './profile';
 import SettingItem from './setting_item';
-import TextField from 'react-native-md-textinput';
+// import TextField from 'react-native-md-textinput';
 export default class UpdateProfile extends Component {
     renderPage() {
         

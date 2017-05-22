@@ -31,10 +31,6 @@ class Intro extends Component {
     }
     render() {
         return (
-            /*<Modal
-           
-                onRequestClose={() => { }}
-            >*/
                 <Swiper
                     showsButtons={true}
                     loop={false}
